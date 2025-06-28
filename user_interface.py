@@ -13,12 +13,29 @@ def clear_console() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def main_line(text: str, width: int) -> None:
+def main_line(text: str) -> None:
     """
 
     """
-    text = f"{text:^{width}}"
+    text = f"{text:^{se.INTERFACE_WIDTH}}"
     print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
+
+
+def choice_menu() -> str:
+    """
+
+    """
+    print("M. Main menu")
+    print("Q. Quit")
+    print_line()
+    return input("Choose an option: ").strip().lower()
+
+
+def print_line() -> None:
+    """
+
+    """
+    print("-" * se.INTERFACE_WIDTH)
 
 
 def invalid_choice(text: str | None) -> None:
@@ -58,11 +75,12 @@ def main_interface() -> str:
     return: String entered by the user
     """
     clear_console()
-    main_line("Movie search", se.INTERFACE_WIDTH)
+    main_line("Movie search")
     print("1. Search by title")
     print("2. Search by genre and year")
+    print("3. View popular or recent queries")
     print("Q. Quit")
-    print("-" * se.INTERFACE_WIDTH)
+    print_line()
     return input("Choose an option: ").strip().lower()
 
 
@@ -73,7 +91,7 @@ def input_keyword() -> str | None:
     return: String entered by the user
     """
     clear_console()
-    main_line("Search by title", se.INTERFACE_WIDTH)
+    main_line("Search by title")
     return input("\nEnter movie title keyword: ").strip().lower()
 
 
@@ -83,17 +101,17 @@ def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     """
     clear_console()
     if isinstance(text, str):
-        main_line("Search by title", se.INTERFACE_WIDTH)
+        main_line("Search by title")
         print(f"\nSearch by keyword '{text}'")
     if isinstance(text, list):
-        main_line("Search by genre and year", se.INTERFACE_WIDTH)
+        main_line("Search by genre and year")
         print(f"\nSelected genre - '{text[0]}'")
         if isinstance(text[1], int):
             print(f"Selected year - '{text[1]}'")
         if isinstance(text[1], list):
             print(f"Selected range of years is from {text[1][0]} to {text[1][1]}")
     print()
-    df = pd.DataFrame(data, columns=se.TABLE_HEADERS)
+    df = pd.DataFrame(data, columns=se.SQL_TABLE_HEADERS)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
     df["Rental cost"] = df["Rental cost"].apply(lambda item: f"{item}€")
@@ -119,10 +137,7 @@ def data_frame_menu(page: int, pages: int, choice: str) -> str:
     elif choice == "genre":
         print("C. Change genre")
         print("Y. Change year parameters")
-    print("M. Main menu")
-    print("Q. Quit")
-    print("-" * se.INTERFACE_WIDTH)
-    return input("Choose an option: ").strip().lower()
+    return choice_menu()
 
 
 def choice_genres(genres: list) -> str:
@@ -134,7 +149,7 @@ def choice_genres(genres: list) -> str:
     quan = len(genres) // col + (1 if len(genres) % col else 0)
     width = len(max(genres, key=len)) + 2
     table_width = (width + 6) * col - 1
-    main_line("Select a movie genre", se.INTERFACE_WIDTH)
+    main_line("Select a movie genre")
     for i in range(quan):
         n1 = i + 1
         n2 = i + 1 + quan
@@ -147,10 +162,8 @@ def choice_genres(genres: list) -> str:
             text = text + f" {n4:^3}. {genres[n4 - 1]:<{width}}"
         print(text)
     print("-" * table_width)
-    print("M. Main menu")
-    print("Q. Quit")
-    print("-" * table_width)
-    return input("Choose an option: ").strip().lower()
+    print()
+    return choice_menu()
 
 
 def choice_year(years: tuple, genre: str) -> str | None:
@@ -158,8 +171,8 @@ def choice_year(years: tuple, genre: str) -> str | None:
 
     """
     clear_console()
-    main_line("Specify the year of the movie", se.INTERFACE_WIDTH)
-    main_line("or a range of years", se.INTERFACE_WIDTH)
+    main_line("Specify the year of the movie")
+    main_line("or a range of years")
     text = f"from {years[0]} to {years[1]} (inclusive)"
     print(f"{text:^{se.INTERFACE_WIDTH}}")
     print()
@@ -167,10 +180,41 @@ def choice_year(years: tuple, genre: str) -> str | None:
     print(f"{text:^{se.INTERFACE_WIDTH}}")
     text = "or do not enter anything"
     print(f"{text:^{se.INTERFACE_WIDTH}}")
-    print("-" * se.INTERFACE_WIDTH)
+    print_line()
     print(f"Selected genre - '{genre}'")
-    print("-" * se.INTERFACE_WIDTH)
-    print("M. Main menu")
-    print("Q. Quit")
-    print("-" * se.INTERFACE_WIDTH)
-    return input("Choose an option: ").strip().lower()
+    print_line()
+    return choice_menu()
+
+
+def view_queries_interface() -> str:
+    clear_console()
+    main_line("View popular or recent queries")
+    print("1. View popular queries")
+    print("2. View recent queries")
+    return choice_menu()
+
+
+def show_queries_data_frame(data: tuple, choice: str) -> str:
+    """
+    pass
+    """
+    clear_console()
+    if choice == "recent":
+        df = pd.DataFrame(data, columns=se.MONGO_TABLE_HEADERS_RECENT)
+    else:
+        df = pd.DataFrame(data, columns=se.MONGO_TABLE_HEADERS_POPULAR)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+    table_lines = df.to_string(index=False).split('\n')
+    text = ("Popular" if choice == "popular" else "Recent") + " queries"
+    max_length = max(len(line) for line in table_lines) + df.shape[1] * 3 + 1
+    text = f"{text:^{max_length}}"
+    print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
+    print()
+    print(df.to_markdown(tablefmt="github", index=False))
+    print()
+    if choice == "recent":
+        print("1. View popular queries")
+    else:
+        print("1. View recent queries")
+    return choice_menu()

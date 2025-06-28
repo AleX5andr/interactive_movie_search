@@ -14,6 +14,14 @@ def stop() -> None:
     sys.exit(0)
 
 
+def main_choice(choice: str) -> None:
+    match choice:
+        case "m":
+            main.main()
+        case "q":
+            stop()
+
+
 def main_action(choice: str) -> None:
     """
 
@@ -25,8 +33,10 @@ def main_action(choice: str) -> None:
             main.search_by_title()
         case "2":
             main.search_by_genre_year()
+        case "3":
+            main.view_queries(None)
         case _:
-            ui.invalid_choice("")
+            ui.invalid_choice(None)
             main.main()
 
 
@@ -47,45 +57,40 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
             if not data:
                 data = sql.search_movie_by_title(keyword, start)
             ui.show_data_frame(data, page, pages, keyword)
-        match ui.data_frame_menu(page, pages, "title"):
-            case "q":
-                stop()
+        choice = ui.data_frame_menu(page, pages, "title")
+        main_choice(choice)
+        match choice:
             case "1":
                 if not quantity or page == pages:
-                    ui.invalid_choice("")
+                    ui.invalid_choice(None)
                 else:
                     start += 10
                     page += 1
                     data = []
             case "2":
                 if not quantity or page == 1:
-                    ui.invalid_choice("")
+                    ui.invalid_choice(None)
                 else:
                     start -= 10
                     page -= 1
                     data = []
             case "c":
                 main.search_by_title()
-            case "m":
-                main.main()
             case _:
-                ui.invalid_choice("")
+                ui.invalid_choice(None)
 
 
 def choice_genre(genres: list, choice: str) -> str:
     """
 
     """
-    if choice == "m":
-        main.main()
-    elif choice == "q":
-        stop()
+    main_choice(choice)
     try:
         choice = int(choice)
         if choice < 1 or choice > len(genres):
             raise ValueError
     except ValueError:
-        ui.invalid_choice("")
+        ui.invalid_choice(None)
         main.search_by_genre_year()
     return genres[choice - 1]
 
@@ -94,10 +99,7 @@ def choice_year(choice: str, genre: str, years: tuple) -> list | int | None:
     """
 
     """
-    if choice == "m":
-        main.main()
-    elif choice == "q":
-        stop()
+    main_choice(choice)
     years_choice = ""
     try:
         if len(choice) == 4:
@@ -145,18 +147,18 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
             ui.empty_result([genre, years])
         else:
             ui.show_data_frame(data, page, pages, [genre, years])
-        match ui.data_frame_menu(page, pages, "genre"):
-            case "q":
-                stop()
+        choice = ui.data_frame_menu(page, pages, "genre")
+        main_choice(choice)
+        match choice:
             case "1":
                 if not quantity or page == pages:
-                    ui.invalid_choice("")
+                    ui.invalid_choice(None)
                 else:
                     start += 10
                     page += 1
             case "2":
                 if not quantity or page == 1:
-                    ui.invalid_choice("")
+                    ui.invalid_choice(None)
                 else:
                     start -= 10
                     page -= 1
@@ -174,7 +176,37 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
                 start = 0
                 page = 1
                 check = 0
-            case "m":
-                main.main()
             case _:
-                ui.invalid_choice("")
+                ui.invalid_choice(None)
+
+
+def view_queries_action(choice: str) -> None:
+    """
+
+    """
+    main_choice(choice)
+    match choice:
+        case "1":
+            data = mong.get_queries("popular")
+            while True:
+                choice_q = ui.show_queries_data_frame(data, "popular")
+                main_choice(choice_q)
+                if choice_q == "1":
+                    choice = "2"
+                    break
+                else:
+                    ui.invalid_choice(None)
+        case "2":
+            data = mong.get_queries("recent")
+            while True:
+                choice_q = ui.show_queries_data_frame(data, "recent")
+                main_choice(choice_q)
+                if choice_q == "1":
+                    choice = "1"
+                    break
+                else:
+                    ui.invalid_choice(None)
+        case _:
+            ui.invalid_choice(None)
+            choice = None
+    main.view_queries(choice)

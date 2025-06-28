@@ -9,7 +9,7 @@ MYSQL_CONFIG = {
 
 # MySQL querys und parameters
 LINE_LIMIT = 10
-TABLE_HEADERS = ["ID", "Title", "Year", "Genre", "Language", "Rental cost", "Rental duration"]
+SQL_TABLE_HEADERS = ["ID", "Title", "Year", "Genre", "Language", "Rental cost", "Rental duration"]
 QUERY_SEARCH_BY_TITLE = '''
     SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
     FROM film AS f
@@ -77,8 +77,10 @@ MONGO_URL = (
 MONGO_COLLECTION = "final_project_100125dam_oleksandr_m"
 
 
-# MongoDB querys und parameters
+# MongoDB parameters
+MONGO_TABLE_HEADERS_RECENT = ["Time stamp", "Search type", "Parameters", "Result count"]
+MONGO_TABLE_HEADERS_POPULAR = ["Query quantity", "Search type", "Parameters", "Result count"]
 
 
-# Interface
+# Interface parameters
 INTERFACE_WIDTH = 40

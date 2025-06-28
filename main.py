@@ -34,5 +34,14 @@ def search_by_genre_year(genre: str | None = None) -> None:
     action.search_by_genre_year(0, genre, choice_years)
 
 
+def view_queries(choice: str | None) -> None:
+    """
+
+    """
+    if not choice:
+        choice = ui.view_queries_interface()
+    action.view_queries_action(choice)
+
+
 if __name__ == "__main__":
     main()
