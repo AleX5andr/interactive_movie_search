@@ -16,7 +16,7 @@ def search_by_title() -> None:
     """
     pass
     """
-    keyword = ui.input_keyword("")
+    keyword = ui.input_keyword()
     quantity = sql.quantity_in_movie_by_title(keyword)
     action.search_by_title_action(0, quantity, keyword)
 
@@ -32,8 +32,7 @@ def search_by_genre_year(genre: str | None = None) -> None:
     years = sql.get_years()
     choice = ui.choice_year(years, genre)
     choice_years = action.choice_year(choice, genre, years)
-    data, quantity = sql.search_movie_by_genre_year(genre, choice_years, 0)
-    action.search_by_genre_year(data, quantity, genre, choice_years)
+    action.search_by_genre_year(0, genre, choice_years)
 
 
 if __name__ == "__main__":

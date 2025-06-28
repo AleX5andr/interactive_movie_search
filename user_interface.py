@@ -27,12 +27,12 @@ def invalid_choice(text: str | None) -> None:
 
     Param text: Optional custom message to display.
     """
-    t = 1
+    sleep_time = 2
     if not text:
         text = "Invalid choice. Try again."
-        t = 2
+        sleep_time = 1
     print(Fore.RED + "\n" + text + "\n" + Style.RESET_ALL)
-    time.sleep(t)
+    time.sleep(sleep_time)
 
 
 def empty_result(choice: str | list) -> None:
@@ -45,7 +45,7 @@ def empty_result(choice: str | list) -> None:
         text = Fore.RED + f"\nThere are no {choice[0]} movies"
         if isinstance(choice[1], int):
             text += f" released in {choice[1]}."
-        elif isinstance(choice[1], list):
+        if isinstance(choice[1], list):
             text += f" released between {choice[1][0]} and {choice[1][1]}."
         text += Style.RESET_ALL + "\n"
         print(text)
@@ -60,13 +60,13 @@ def main_interface() -> str:
     clear_console()
     main_line("Movie search", se.INTERFACE_WIDTH)
     print("1. Search by title")
-    print("2. Search by genre and year range")
+    print("2. Search by genre and year")
     print("Q. Quit")
     print("-" * se.INTERFACE_WIDTH)
     return input("Choose an option: ").strip().lower()
 
 
-def input_keyword(keyword: None | str) -> str | None:
+def input_keyword() -> str | None:
     """
     Keyword input function to search by movie title In the movie database
     
@@ -74,20 +74,30 @@ def input_keyword(keyword: None | str) -> str | None:
     """
     clear_console()
     main_line("Search by title", se.INTERFACE_WIDTH)
-    if keyword:
-        print(f"\nEnter movie title keyword: {keyword}")
-    else:
-        return input("\nEnter movie title keyword: ").strip().lower()
+    return input("\nEnter movie title keyword: ").strip().lower()
 
 
-def show_data_frame(data: tuple, page: int, pages: int):
+def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     """
     pass
     """
+    clear_console()
+    if isinstance(text, str) and text:
+        main_line("Search by title", se.INTERFACE_WIDTH)
+        print(f"\nSearch by keyword '{text}'")
+    if isinstance(text, list) or not text:
+        main_line("Search by genre and year", se.INTERFACE_WIDTH)
+        print(f"Selected genre - '{text[0]}'")
+        if isinstance(text[1], int):
+            print(f"Selected year - '{text[1]}'")
+        if isinstance(text[1], list):
+            print(f"Selected range of years is from {text[1][0]} to {text[1][1]}")
+    print()
     df = pd.DataFrame(data, columns=se.HEADERS_BY_TITLE)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
-    print()
+    df["Rental cost"] = df["Rental cost"].apply(lambda item: f"{item}€")
+    df["Rental duration"] = df["Rental duration"].apply(lambda item: f"{item} day(s)")
     print(df.to_markdown(tablefmt="github", index=False))
     table_lines = df.to_string(index=False).split('\n')
     max_length = max(len(line) for line in table_lines) + df.shape[1] * 3 + 1
@@ -96,7 +106,7 @@ def show_data_frame(data: tuple, page: int, pages: int):
     print(f"{text:^{max_length}}\n")
 
 
-def data_frame_menu(page: int, pages: int, choice: str):
+def data_frame_menu(page: int, pages: int, choice: str) -> str:
     """
     pass
     """
@@ -104,11 +114,11 @@ def data_frame_menu(page: int, pages: int, choice: str):
         print("1. Next page")
     if page > 1:
         print("2. Previous page")
-    if choice == "keyword":
+    if choice == "title":
         print("C. Change keyword")
     elif choice == "genre":
         print("C. Change genre")
-        print("Y. Change year parameter")
+        print("Y. Change year parameters")
     print("M. Main menu")
     print("Q. Quit")
     print("-" * se.INTERFACE_WIDTH)

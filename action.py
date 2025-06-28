@@ -44,40 +44,30 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
         else:
             if not data:
                 data = sql.search_movie_by_title(keyword, start)
-            ui.show_data_frame(data, page, pages)
-        match ui.data_frame_menu(page, pages):
+            ui.show_data_frame(data, page, pages, keyword)
+        match ui.data_frame_menu(page, pages, "title"):
             case "q":
                 stop()
             case "1":
                 if not quantity or page == pages:
                     ui.invalid_choice("")
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
                 else:
                     start += 10
                     page += 1
                     data = []
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
             case "2":
                 if not quantity or page == 1:
                     ui.invalid_choice("")
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
                 else:
                     start -= 10
                     page -= 1
                     data = []
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
             case "c":
                 main.search_by_title()
             case "m":
                 main.main()
             case _:
                 ui.invalid_choice("")
-                ui.clear_console()
-                ui.input_keyword(keyword)
 
 
 def choice_genre(genres: list, choice: str) -> str:
@@ -132,10 +122,11 @@ def choice_year(choice: str, genre: str, years: tuple) -> list | int | None:
     return years_choice
 
 
-def search_by_genre_year(data: tuple, quantity: int, genre: str, years: int | list | None) -> None:
+def search_by_genre_year(start: int, genre: str, years: int | list | None) -> None:
     """
 
     """
+    data, quantity = sql.search_movie_by_genre_year(genre, years, start)
     page = 1
     pages = quantity // 10 + 1
     while True:
@@ -144,37 +135,31 @@ def search_by_genre_year(data: tuple, quantity: int, genre: str, years: int | li
             pages = 0
             ui.empty_result([genre, years])
         else:
-            ui.show_data_frame(data, page, pages)
-        match ui.data_frame_menu(page, pages):
+            if not data:
+                data, quantity = sql.search_movie_by_genre_year(genre, years, start)
+            ui.show_data_frame(data, page, pages, [genre, years])
+        match ui.data_frame_menu(page, pages, "genre"):
             case "q":
                 stop()
             case "1":
                 if not quantity or page == pages:
                     ui.invalid_choice("")
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
                 else:
                     start += 10
                     page += 1
                     data = []
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
             case "2":
                 if not quantity or page == 1:
                     ui.invalid_choice("")
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
                 else:
                     start -= 10
                     page -= 1
                     data = []
-                    ui.clear_console()
-                    ui.input_keyword(keyword)
             case "c":
-                main.search_by_title()
+                pass
+            case "y":
+                pass
             case "m":
                 main.main()
             case _:
                 ui.invalid_choice("")
-                ui.clear_console()
-                ui.input_keyword(keyword)

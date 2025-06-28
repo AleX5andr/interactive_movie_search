@@ -9,7 +9,7 @@ MYSQL_CONFIG = {
 
 # MySQL querys und parameters
 QUERY_SEARCH_BY_TITLE = '''
-    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
     FROM film AS f
     JOIN film_category AS fc on f.film_id = fc.film_id
     JOIN category AS c on fc.category_id = c.category_id
@@ -19,7 +19,7 @@ QUERY_SEARCH_BY_TITLE = '''
     OFFSET %(start)s
     '''
 SEARCH_BY_TITLE_LIMIT = 10
-HEADERS_BY_TITLE = ["ID", "Title", "Year", "Genre", "Language"]
+HEADERS_BY_TITLE = ["ID", "Title", "Year", "Genre", "Language", "Rental cost", "Rental duration"]
 QUERY_NUMBER_OF_LINES_IN_SEARCH_BY_TITLE = '''
     SELECT COUNT(*)
     FROM film
@@ -35,7 +35,7 @@ QUERY_GET_YEARS = '''
     FROM film
     '''
 QUERY_SEARCH_BY_GENRE = '''
-    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
     FROM film AS f
     JOIN film_category AS fc on f.film_id = fc.film_id
     JOIN category AS c on fc.category_id = c.category_id
@@ -45,7 +45,7 @@ QUERY_SEARCH_BY_GENRE = '''
     OFFSET %(start)s
     '''
 QUERY_SEARCH_BY_GENRE_UND_YEAR = '''
-    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
     FROM film AS f
     JOIN film_category AS fc on f.film_id = fc.film_id
     JOIN category AS c on fc.category_id = c.category_id
@@ -56,7 +56,7 @@ QUERY_SEARCH_BY_GENRE_UND_YEAR = '''
     OFFSET %(start)s
     '''
 QUERY_SEARCH_BY_GENRE_UND_YEARS = '''
-    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
     FROM film AS f
     JOIN film_category AS fc on f.film_id = fc.film_id
     JOIN category AS c on fc.category_id = c.category_id
