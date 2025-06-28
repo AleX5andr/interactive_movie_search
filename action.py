@@ -1,6 +1,7 @@
 import main
 import user_interface as ui
 import mysql_connector as sql
+import mongo_connector as mong
 import sys
 
 
@@ -36,6 +37,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
     page = 1
     pages = quantity // 10 + 1
     data = []
+    mong.add_request(keyword, quantity)
     while True:
         if not quantity:
             page = 0
@@ -130,8 +132,12 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
 
     """
     page = 1
+    check = 0
     while True:
         data, quantity = sql.search_movie_by_genre_year(genre, years, start)
+        if check == 0:
+            mong.add_request([genre, years], quantity)
+            check = 1
         pages = quantity // 10 + (1 if quantity % 10 else 0)
         if not quantity:
             page = 0
@@ -160,12 +166,14 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
                 genre = choice_genre(genres, choice)
                 start = 0
                 page = 1
+                check = 0
             case "y":
                 range_years = sql.get_years()
                 choice = ui.choice_year(range_years, genre)
                 years = choice_year(choice, genre, range_years)
                 start = 0
                 page = 1
+                check = 0
             case "m":
                 main.main()
             case _:

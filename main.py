@@ -1,7 +1,6 @@
 import action
 import user_interface as ui
 import mysql_connector as sql
-# import mongo_connector as mong
 
 
 def main() -> None:
