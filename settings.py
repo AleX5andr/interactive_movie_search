@@ -1,0 +1,81 @@
+# MySQL credentials
+MYSQL_CONFIG = {
+    'host': 'ich-db.edu.itcareerhub.de',
+    'user': 'ich1',
+    'password': 'password',
+    'database': 'sakila'
+}
+
+
+# MySQL querys und parameters
+QUERY_SEARCH_BY_TITLE = '''
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    FROM film AS f
+    JOIN film_category AS fc on f.film_id = fc.film_id
+    JOIN category AS c on fc.category_id = c.category_id
+    JOIN language AS la on f.language_id = la.language_id
+    WHERE f.title like %(keyword)s
+    LIMIT %(end)s
+    OFFSET %(start)s
+    '''
+SEARCH_BY_TITLE_LIMIT = 10
+HEADERS_BY_TITLE = ["ID", "Title", "Year", "Genre", "Language"]
+QUERY_NUMBER_OF_LINES_IN_SEARCH_BY_TITLE = '''
+    SELECT COUNT(*)
+    FROM film
+    WHERE title like %(keyword)s
+    '''
+
+QUERY_GET_GENRES = '''
+    SELECT name
+    FROM category
+    '''
+QUERY_GET_YEARS = '''
+    SELECT MIN(release_year), MAX(release_year)
+    FROM film
+    '''
+QUERY_SEARCH_BY_GENRE = '''
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    FROM film AS f
+    JOIN film_category AS fc on f.film_id = fc.film_id
+    JOIN category AS c on fc.category_id = c.category_id
+    JOIN language AS la on f.language_id = la.language_id
+    WHERE c.name = %(genre)s
+    LIMIT %(end)s
+    OFFSET %(start)s
+    '''
+QUERY_SEARCH_BY_GENRE_UND_YEAR = '''
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    FROM film AS f
+    JOIN film_category AS fc on f.film_id = fc.film_id
+    JOIN category AS c on fc.category_id = c.category_id
+    JOIN language AS la on f.language_id = la.language_id
+    WHERE c.name = %(genre)s AND 
+        f.release_year = %(year)s
+    LIMIT %(end)s
+    OFFSET %(start)s
+    '''
+QUERY_SEARCH_BY_GENRE_UND_YEARS = '''
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name
+    FROM film AS f
+    JOIN film_category AS fc on f.film_id = fc.film_id
+    JOIN category AS c on fc.category_id = c.category_id
+    JOIN language AS la on f.language_id = la.language_id
+    WHERE c.name = %(genre)s AND
+        f.release_year >= %(year_1)s AND
+        f.release_year <= %(year_2)s
+    LIMIT %(end)s
+    OFFSET %(start)s
+    '''
+
+
+# MongoDB credentials
+MONGO_URL = (
+    "mongodb://ich_editor:verystrongpassword@mongo.itcareerhub.de/"
+    "?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich_edit"
+)
+MONGO_COLLECTION = "final_project_100125dam_oleksandr_m"
+
+
+# Interface
+INTERFACE_WIDTH = 40
