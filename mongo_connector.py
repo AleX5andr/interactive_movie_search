@@ -1,5 +1,3 @@
-import time
-
 import settings as se
 import sys
 from pymongo import MongoClient
