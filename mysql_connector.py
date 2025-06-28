@@ -1,7 +1,7 @@
-﻿import sys
-from typing import Any, Tuple
+﻿import settings as se
 import pymysql
-import settings as se
+import sys
+from typing import Any
 
 
 def connection() -> pymysql.connections.Connection:
@@ -43,7 +43,7 @@ def search_movie_by_title(keyword: str, start: int) -> tuple[tuple[Any, ...], ..
         params = {
             "keyword": f"%{keyword}%",
             "start": start,
-            "end": se.SEARCH_BY_TITLE_LIMIT
+            "end": se.LINE_LIMIT
         }
         cursor.execute(se.QUERY_SEARCH_BY_TITLE, params)
         data = cursor.fetchall()
@@ -86,7 +86,7 @@ def search_movie_by_genre_year(genre: str, years: list | int | None, start: int)
             params = {
                 "genre": genre,
                 "start": start,
-                "end": se.SEARCH_BY_TITLE_LIMIT
+                "end": se.LINE_LIMIT
             }
             query = se.QUERY_SEARCH_BY_GENRE
         elif isinstance(years, int):
@@ -94,7 +94,7 @@ def search_movie_by_genre_year(genre: str, years: list | int | None, start: int)
                 "genre": genre,
                 "year": years,
                 "start": start,
-                "end": se.SEARCH_BY_TITLE_LIMIT
+                "end": se.LINE_LIMIT
             }
             query = se.QUERY_SEARCH_BY_GENRE_UND_YEAR
         else:
@@ -103,7 +103,7 @@ def search_movie_by_genre_year(genre: str, years: list | int | None, start: int)
                 "year_1": years[0],
                 "year_2": years[1],
                 "start": start,
-                "end": se.SEARCH_BY_TITLE_LIMIT
+                "end": se.LINE_LIMIT
             }
             query = se.QUERY_SEARCH_BY_GENRE_UND_YEARS
         quantity_query = query.split("LIMIT")[0]

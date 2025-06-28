@@ -1,7 +1,7 @@
+import settings as se
 import os
 import time
 import pandas as pd
-import settings as se
 from colorama import Fore, Back, Style
 
 
@@ -82,18 +82,18 @@ def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     pass
     """
     clear_console()
-    if isinstance(text, str) and text:
+    if isinstance(text, str):
         main_line("Search by title", se.INTERFACE_WIDTH)
         print(f"\nSearch by keyword '{text}'")
-    if isinstance(text, list) or not text:
+    if isinstance(text, list):
         main_line("Search by genre and year", se.INTERFACE_WIDTH)
-        print(f"Selected genre - '{text[0]}'")
+        print(f"\nSelected genre - '{text[0]}'")
         if isinstance(text[1], int):
             print(f"Selected year - '{text[1]}'")
         if isinstance(text[1], list):
             print(f"Selected range of years is from {text[1][0]} to {text[1][1]}")
     print()
-    df = pd.DataFrame(data, columns=se.HEADERS_BY_TITLE)
+    df = pd.DataFrame(data, columns=se.TABLE_HEADERS)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
     df["Rental cost"] = df["Rental cost"].apply(lambda item: f"{item}€")

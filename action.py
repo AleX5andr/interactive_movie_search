@@ -1,7 +1,7 @@
-import sys
-import user_interface as ui
 import main
+import user_interface as ui
 import mysql_connector as sql
+import sys
 
 
 def stop() -> None:
@@ -103,15 +103,18 @@ def choice_year(choice: str, genre: str, years: tuple) -> list | int | None:
             if not years[0] <= year <= years[1]:
                 raise ValueError(f"The year entered is not within the specified range ({years[0]} - {years[1]})")
             years_choice = year
-        elif len(choice) > 8:
+        elif len(choice) >= 8:
             year_1 = int(choice[:4])
-            year_2 = int(choice[-5:])
-            if year_2 < year_1:
-                year_1, year_2 = year_2, year_1
-            if not years[0] <= year_1 <= years[1] or not years[0] <= year_2 <= years[1]:
-                raise ValueError(f"The entered range of years is not within the specified range\
-                 ({years[0]} - {years[1]})")
-            years_choice = [year_1, year_2]
+            year_2 = int(choice[-4:])
+            if not year_1 == year_2:
+                if year_2 < year_1:
+                    year_1, year_2 = year_2, year_1
+                if not years[0] <= year_1 <= years[1] or not years[0] <= year_2 <= years[1]:
+                    raise ValueError(f"The entered range of years is not within the specified range \
+({years[0]} - {years[1]})")
+                years_choice = [year_1, year_2]
+            else:
+                years_choice = year_1
         elif choice == "":
             years_choice = ""
         else:
@@ -126,17 +129,15 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
     """
 
     """
-    data, quantity = sql.search_movie_by_genre_year(genre, years, start)
     page = 1
-    pages = quantity // 10 + 1
     while True:
+        data, quantity = sql.search_movie_by_genre_year(genre, years, start)
+        pages = quantity // 10 + (1 if quantity % 10 else 0)
         if not quantity:
             page = 0
             pages = 0
             ui.empty_result([genre, years])
         else:
-            if not data:
-                data, quantity = sql.search_movie_by_genre_year(genre, years, start)
             ui.show_data_frame(data, page, pages, [genre, years])
         match ui.data_frame_menu(page, pages, "genre"):
             case "q":
@@ -147,18 +148,24 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
                 else:
                     start += 10
                     page += 1
-                    data = []
             case "2":
                 if not quantity or page == 1:
                     ui.invalid_choice("")
                 else:
                     start -= 10
                     page -= 1
-                    data = []
             case "c":
-                pass
+                genres = sql.get_genres()
+                choice = ui.choice_genres(genres)
+                genre = choice_genre(genres, choice)
+                start = 0
+                page = 1
             case "y":
-                pass
+                range_years = sql.get_years()
+                choice = ui.choice_year(range_years, genre)
+                years = choice_year(choice, genre, range_years)
+                start = 0
+                page = 1
             case "m":
                 main.main()
             case _:

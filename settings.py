@@ -8,6 +8,8 @@ MYSQL_CONFIG = {
 
 
 # MySQL querys und parameters
+LINE_LIMIT = 10
+TABLE_HEADERS = ["ID", "Title", "Year", "Genre", "Language", "Rental cost", "Rental duration"]
 QUERY_SEARCH_BY_TITLE = '''
     SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
     FROM film AS f
@@ -18,8 +20,6 @@ QUERY_SEARCH_BY_TITLE = '''
     LIMIT %(end)s
     OFFSET %(start)s
     '''
-SEARCH_BY_TITLE_LIMIT = 10
-HEADERS_BY_TITLE = ["ID", "Title", "Year", "Genre", "Language", "Rental cost", "Rental duration"]
 QUERY_NUMBER_OF_LINES_IN_SEARCH_BY_TITLE = '''
     SELECT COUNT(*)
     FROM film
@@ -75,6 +75,9 @@ MONGO_URL = (
     "?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich_edit"
 )
 MONGO_COLLECTION = "final_project_100125dam_oleksandr_m"
+
+
+# MongoDB querys und parameters
 
 
 # Interface
