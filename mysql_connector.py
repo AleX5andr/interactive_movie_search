@@ -1,12 +1,13 @@
 ﻿import settings as se
 import pymysql
 import sys
-from typing import Any
 
 
 def connection() -> pymysql.connections.Connection:
     """
+    Establishes and returns a MySQL database connection.
 
+    :return: Active MySQL connection object.
     """
     try:
         conn = pymysql.connect(**se.MYSQL_CONFIG)
@@ -18,7 +19,10 @@ def connection() -> pymysql.connections.Connection:
 
 def quantity_in_movie_by_title(keyword: str) -> int:
     """
-    pass
+    Returns the count of movies matching the given title keyword.
+
+    :param keyword: Keyword to search within movie titles.
+    :return: Number of matching movies.
     """
     conn = connection()
     with conn.cursor() as cursor:
@@ -31,12 +35,13 @@ def quantity_in_movie_by_title(keyword: str) -> int:
     return quantity
 
 
-def search_movie_by_title(keyword: str, start: int) -> tuple[tuple[Any, ...], ...]:
+def search_movie_by_title(keyword: str, start: int) -> tuple:
     """
-    Search function by movie titles in the MySQL database
+    Retrieves a batch of movies matching the title keyword with pagination.
 
-    param keyword: search string for movie titles
-    return: data obtained from the MySQL database
+    :param keyword: Keyword to search within movie titles.
+    :param start: Offset to start fetching results from.
+    :return: Tuple of movie records.
     """
     conn = connection()
     with conn.cursor() as cursor:
@@ -53,7 +58,9 @@ def search_movie_by_title(keyword: str, start: int) -> tuple[tuple[Any, ...], ..
 
 def get_genres() -> list:
     """
-    pass
+    Retrieves a list of all movie genres from the database.
+
+    :return: List of genre names.
     """
     conn = connection()
     with conn.cursor() as cursor:
@@ -63,9 +70,11 @@ def get_genres() -> list:
     return genres
 
 
-def get_years() -> tuple[Any, ...]:
+def get_years() -> tuple:
     """
+    Retrieves the range of years (min and max) of movies from the database.
 
+    :return: Tuple containing.
     """
     conn = connection()
     with conn.cursor() as cursor:
@@ -75,10 +84,14 @@ def get_years() -> tuple[Any, ...]:
     return years
 
 
-def search_movie_by_genre_year(genre: str, years: list | int | None, start: int) -> \
-        tuple[tuple[tuple[Any, ...], ...], int]:
+def search_movie_by_genre_year(genre: str, years: list | int | None, start: int) -> tuple[tuple, int]:
     """
+    Retrieves movies filtered by genre and optionally by year or year range with pagination.
 
+    :param genre: Movie genre to filter by.
+    :param years: Single year (int), year range (list), or None.
+    :param start: Offset to start fetching results from.
+    :return: Tuple of movie records and total count of matching entries.
     """
     conn = connection()
     with conn.cursor() as cursor:
