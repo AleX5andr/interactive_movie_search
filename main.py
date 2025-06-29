@@ -5,7 +5,7 @@ import mysql_connector as sql
 
 def main() -> None:
     """
-
+    Runs the main program loop by displaying the interface and handling user choice.
     """
     choice = ui.main_interface()
     action.main_action(choice)
@@ -13,7 +13,7 @@ def main() -> None:
 
 def search_by_title() -> None:
     """
-    pass
+    Initiates a search by movie title.
     """
     keyword = ui.input_keyword()
     quantity = sql.quantity_in_movie_by_title(keyword)
@@ -22,7 +22,9 @@ def search_by_title() -> None:
 
 def search_by_genre_year(genre: str | None = None) -> None:
     """
+    Initiates a search by genre and year.
 
+    :param genre: Optional preselected genre.
     """
     if not genre:
         genres = sql.get_genres()
@@ -36,7 +38,9 @@ def search_by_genre_year(genre: str | None = None) -> None:
 
 def view_queries(choice: str | None) -> None:
     """
+    Handles viewing of popular or recent queries.
 
+    :param choice: User's choice or None to prompt.
     """
     if not choice:
         choice = ui.view_queries_interface()

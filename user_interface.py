@@ -7,7 +7,7 @@ from colorama import Fore, Back, Style
 
 def clear_console() -> None:
     """
-    The function clears the user's console.
+    Clears the console screen for Windows, Linux, and macOS.
     """
     # Windows → cls, Linux/macOS → clear
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -15,7 +15,9 @@ def clear_console() -> None:
 
 def main_line(text: str) -> None:
     """
+    Prints a centered line of text with styled formatting.
 
+    :param text: The text to display.
     """
     text = f"{text:^{se.INTERFACE_WIDTH}}"
     print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
@@ -23,7 +25,9 @@ def main_line(text: str) -> None:
 
 def choice_menu() -> str:
     """
+    Displays a simple menu and returns the user's choice.
 
+    :return: The user's selected option, converted to lowercase and stripped of whitespace.
     """
     print("M. Main menu")
     print("Q. Quit")
@@ -33,16 +37,16 @@ def choice_menu() -> str:
 
 def print_line() -> None:
     """
-
+    Prints a horizontal line based on the interface width.
     """
     print("-" * se.INTERFACE_WIDTH)
 
 
 def invalid_choice(text: str | None) -> None:
     """
-    Function to display a message about an erroneous user input.
+    Displays an error message for invalid user input.
 
-    Param text: Optional custom message to display.
+    :param text: Optional custom error message.
     """
     sleep_time = 2
     if not text:
@@ -54,7 +58,9 @@ def invalid_choice(text: str | None) -> None:
 
 def empty_result(choice: str | list) -> None:
     """
-    Function to display a message about an erroneous user input.
+    Displays a red warning message when no movies are found for the given search.
+
+    :param choice: Search parameter.
     """
     if isinstance(choice, str):
         print(Fore.RED + f"\nThere are no movies containing the keyword '{choice}'\n" + Style.RESET_ALL)
@@ -70,9 +76,9 @@ def empty_result(choice: str | list) -> None:
 
 def main_interface() -> str:
     """
-    The function responsible for visualizing the main menu
-    
-    return: String entered by the user
+    Displays the main menu interface and returns the user's choice.
+
+    :return: User's selected option as a lowercase, stripped string.
     """
     clear_console()
     main_line("Movie search")
@@ -86,9 +92,9 @@ def main_interface() -> str:
 
 def input_keyword() -> str | None:
     """
-    Keyword input function to search by movie title In the movie database
-    
-    return: String entered by the user
+    Prompts the user to enter a movie title keyword.
+
+    :return: The entered keyword in lowercase with whitespace stripped.
     """
     clear_console()
     main_line("Search by title")
@@ -97,7 +103,12 @@ def input_keyword() -> str | None:
 
 def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     """
-    pass
+    Displays search results in a formatted pandas DataFrame with paging info.
+
+    :param data: Tuple of records to display.
+    :param page: Current page number.
+    :param pages: Total number of pages.
+    :param text: Search parameter.
     """
     clear_console()
     if isinstance(text, str):
@@ -126,7 +137,12 @@ def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
 
 def data_frame_menu(page: int, pages: int, choice: str) -> str:
     """
-    pass
+    Displays navigation options for paginated search results and returns user choice.
+
+    :param page: Current page number.
+    :param pages: Total number of pages.
+    :param choice: Type of search.
+    :return: The user's menu choice as a lowercase string.
     """
     if page < pages:
         print("1. Next page")
@@ -142,7 +158,10 @@ def data_frame_menu(page: int, pages: int, choice: str) -> str:
 
 def choice_genres(genres: list) -> str:
     """
+    Displays a formatted menu of movie genres and returns the user's choice.
 
+    :param genres: List of genre names.
+    :return: The user's selected option as a lowercase, stripped string.
     """
     clear_console()
     col = 4
@@ -168,7 +187,11 @@ def choice_genres(genres: list) -> str:
 
 def choice_year(years: tuple, genre: str) -> str | None:
     """
+    Displays a prompt to specify a movie year or range and returns user input.
 
+    :param years: Tuple with start and end years.
+    :param genre: Selected movie genre.
+    :return: The user's choice as a lowercase, stripped string.
     """
     clear_console()
     main_line("Specify the year of the movie")
@@ -187,6 +210,11 @@ def choice_year(years: tuple, genre: str) -> str | None:
 
 
 def view_queries_interface() -> str:
+    """
+    Displays options to view popular or recent queries and returns user choice.
+
+    :return: The user's selected option as a lowercase, stripped string.
+    """
     clear_console()
     main_line("View popular or recent queries")
     print("1. View popular queries")
@@ -196,7 +224,11 @@ def view_queries_interface() -> str:
 
 def show_queries_data_frame(data: tuple, choice: str) -> str:
     """
-    pass
+    Displays a styled DataFrame of recent or popular queries and prompts for next action.
+
+    :param data: Tuple of query records.
+    :param choice: Type of queries to display.
+    :return: The user's menu choice as a lowercase, stripped string.
     """
     clear_console()
     if choice == "recent":

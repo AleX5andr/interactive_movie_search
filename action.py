@@ -7,14 +7,19 @@ import sys
 
 def stop() -> None:
     """
-
+    Prints a goodbye message, draws a line, and exits the program.
     """
     print("\nGoodbye!")
-    print("=" * 40)
+    ui.print_line()
     sys.exit(0)
 
 
 def main_choice(choice: str) -> None:
+    """
+    Executes an action based on the user's main menu choice.
+
+    :param choice: User's menu choice.
+    """
     match choice:
         case "m":
             main.main()
@@ -24,7 +29,9 @@ def main_choice(choice: str) -> None:
 
 def main_action(choice: str) -> None:
     """
+    Executes the corresponding action based on the main menu choice.
 
+    :param choice: User's menu choice.
     """
     match choice:
         case "q":
@@ -42,7 +49,11 @@ def main_action(choice: str) -> None:
 
 def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
     """
+    Handles the interactive search-by-title flow with pagination.
 
+    :param start: Starting index for SQL query pagination.
+    :param quantity: Total number of search results.
+    :param keyword: The search keyword for movie titles.
     """
     page = 1
     pages = quantity // 10 + 1
@@ -82,7 +93,11 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
 
 def choice_genre(genres: list, choice: str) -> str:
     """
+    Validates and returns the selected genre from the list based on user input.
 
+    :param genres: List of available genres.
+    :param choice: User's raw input choice.
+    :return: The selected genre name.
     """
     main_choice(choice)
     try:
@@ -97,7 +112,12 @@ def choice_genre(genres: list, choice: str) -> str:
 
 def choice_year(choice: str, genre: str, years: tuple) -> list | int | None:
     """
+    Validates and parses the year or year range input from the user.
 
+    :param choice: User input string for year or year range.
+    :param genre: Selected movie genre.
+    :param years: Allowed range of years.
+    :return: Parsed year(s) or empty string.
     """
     main_choice(choice)
     years_choice = ""
@@ -131,7 +151,11 @@ def choice_year(choice: str, genre: str, years: tuple) -> list | int | None:
 
 def search_by_genre_year(start: int, genre: str, years: int | list | None) -> None:
     """
+    Handles interactive search by genre and year with pagination.
 
+    :param start: Starting index for SQL query pagination.
+    :param genre: Selected movie genre.
+    :param years: Selected year or range of years.
     """
     page = 1
     check = 0
@@ -182,7 +206,9 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
 
 def view_queries_action(choice: str) -> None:
     """
+    Handles user actions for viewing popular or recent search queries.
 
+    :param choice: User's menu choice.
     """
     main_choice(choice)
     match choice:

@@ -7,7 +7,11 @@ from datetime import datetime
 
 def client_open() -> tuple[MongoClient, Collection]:
     """
+    Connects to MongoDB and returns the client and target collection.
 
+    :return: A tuple (MongoClient, Collection) for database access.
+
+    Exits if the connection fails.
     """
     try:
         client = MongoClient(se.MONGO_URL)
@@ -23,7 +27,12 @@ def client_open() -> tuple[MongoClient, Collection]:
 
 def add_request(choice: str | list, quantity: int) -> None:
     """
+    Saves a search request to MongoDB with timestamp and result count.
 
+    :param choice: Search input; either a keyword (str) or a list.
+    :param quantity: Number of results returned by the search.
+
+    :raises SystemExit: If database insertion fails.
     """
     client, coll = client_open()
     now = datetime.now()
@@ -55,7 +64,12 @@ def add_request(choice: str | list, quantity: int) -> None:
 
 def get_queries(choice: str) -> tuple:
     """
+    Retrieves either the 5 most recent or 5 most frequent search queries from MongoDB.
 
+    :param choice: Type of query selection.
+    :return: A tuple of formatted search query records.
+
+    :raises SystemExit: If the MongoDB connection fails internally.
     """
     client, coll = client_open()
     if choice == "recent":
