@@ -84,4 +84,4 @@ MONGO_TABLE_HEADERS_POPULAR = ["Query quantity", "Search type", "Parameters", "R
 
 # Interface parameters
 INTERFACE_WIDTH = 40
-file_log_name = "app.log"
+FILE_LOG_NAME = "app.log"

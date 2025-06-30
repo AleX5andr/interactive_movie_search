@@ -1,4 +1,5 @@
 import settings as se
+from logger import log
 import os
 import time
 import pandas as pd
@@ -56,12 +57,13 @@ def invalid_choice(text: str | None) -> None:
     time.sleep(sleep_time)
 
 
-def error_print(text: str) -> None:
+def error_print(text: Exception) -> None:
     """
     Prints the provided error message.
 
     :param text: Error message to display.
     """
+    log().critical(text)   # , exc_info=True
     print(text)
 
 

@@ -1,3 +1,5 @@
+import pymongo.errors
+
 import settings as se
 import user_interface as ui
 import sys
@@ -17,10 +19,10 @@ def client_open() -> tuple[MongoClient, Collection]:
     try:
         client = MongoClient(se.MONGO_URL)
         if not client.admin.command("ping"):
-            raise ConnectionError("Connection failed.")
+            raise pymongo.errors.ConnectionFailure("Connection failed.")
         coll = client["ich_edit"][se.MONGO_COLLECTION]
     except ConnectionError as error:
-        ui.error_print(str(error))
+        ui.error_print(error)
         sys.exit(0)
     else:
         return client, coll
@@ -58,7 +60,7 @@ def add_request(choice: str | list, quantity: int) -> None:
     }
     result = coll.insert_one(item)
     if not result.acknowledged:
-        ui.error_print("Error adding document to MongoDB.")
+        ui.error_print(pymongo.errors.WriteError("Error adding document to MongoDB."))
         sys.exit(0)
     client.close()
 

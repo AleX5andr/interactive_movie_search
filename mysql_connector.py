@@ -13,7 +13,7 @@ def connection() -> pymysql.connections.Connection:
     try:
         conn = pymysql.connect(**se.MYSQL_CONFIG)
     except Exception as error:
-        ui.error_print(str(error))
+        ui.error_print(error)
         sys.exit(0)
     return conn
 

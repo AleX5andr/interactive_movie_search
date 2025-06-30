@@ -2,6 +2,7 @@ import main
 import user_interface as ui
 import mysql_connector as sql
 import mongo_connector as mong
+from logger import log
 import sys
 import math
 
@@ -43,6 +44,7 @@ def main_action(choice: str) -> None:
         case "3":
             main.view_queries()
         case _:
+            log().warning("Invalid choice.")
             ui.invalid_choice(None)
             main.main()
 
@@ -63,6 +65,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
         if not quantity:
             page = 0
             pages = 0
+            ui.clear_console()
             ui.empty_result(keyword)
         else:
             if not data:
@@ -73,6 +76,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
         match choice:
             case "1":
                 if not quantity or page == pages:
+                    log().warning("Invalid choice.")
                     ui.invalid_choice(None)
                 else:
                     start += 10
@@ -80,6 +84,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
                     data = []
             case "2":
                 if not quantity or page == 1:
+                    log().warning("Invalid choice.")
                     ui.invalid_choice(None)
                 else:
                     start -= 10
@@ -88,6 +93,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
             case "c":
                 main.search_by_title()
             case _:
+                log().warning("Invalid choice.")
                 ui.invalid_choice(None)
 
 
@@ -105,6 +111,7 @@ def choice_genre(genres: list, choice: str) -> str:
         if choice < 1 or choice > len(genres):
             raise ValueError
     except ValueError:
+        log().warning("Invalid choice.")
         ui.invalid_choice(None)
         main.search_by_genre_year()
     return genres[choice - 1]
@@ -144,6 +151,7 @@ def choice_year(choice: str, genre: str, years: tuple) -> list | int | None:
         else:
             raise ValueError("Incorrect data entered.\nformat 'YYYY' / 'YYYY YYYY' or do not enter anything")
     except ValueError as error:
+        log().warning("Invalid choice.")
         ui.invalid_choice(str(error))
         main.search_by_genre_year(genre)
     return years_choice
@@ -176,12 +184,14 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
         match choice:
             case "1":
                 if not quantity or page == pages:
+                    log().warning("Invalid choice.")
                     ui.invalid_choice(None)
                 else:
                     start += 10
                     page += 1
             case "2":
                 if not quantity or page == 1:
+                    log().warning("Invalid choice.")
                     ui.invalid_choice(None)
                 else:
                     start -= 10
@@ -201,6 +211,7 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
                 page = 1
                 check = 0
             case _:
+                log().warning("Invalid choice.")
                 ui.invalid_choice(None)
 
 
@@ -218,6 +229,7 @@ def select_queries(queri: str) -> str:
         if choice == "1":
             return "2" if queri == "popular" else "1"
         else:
+            log().warning("Invalid choice.")
             ui.invalid_choice(None)
 
 
@@ -235,6 +247,6 @@ def view_queries_action(choice: str) -> None:
             case "2":
                 choice = select_queries("recent")
             case _:
+                log().warning("Invalid choice.")
                 ui.invalid_choice(None)
-                choice = None
-        # main.view_queries(choice)
+                choice = ui.view_queries_interface()
