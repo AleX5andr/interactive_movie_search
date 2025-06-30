@@ -1,4 +1,5 @@
 import settings as se
+import user_interface as ui
 import sys
 from pymongo import MongoClient
 from pymongo.synchronous.collection import Collection
@@ -19,7 +20,7 @@ def client_open() -> tuple[MongoClient, Collection]:
             raise ConnectionError("Connection failed.")
         coll = client["ich_edit"][se.MONGO_COLLECTION]
     except ConnectionError as error:
-        print(error)
+        ui.error_print(str(error))
         sys.exit(0)
     else:
         return client, coll
@@ -57,7 +58,7 @@ def add_request(choice: str | list, quantity: int) -> None:
     }
     result = coll.insert_one(item)
     if not result.acknowledged:
-        print("Error adding document to MongoDB.")
+        ui.error_print("Error adding document to MongoDB.")
         sys.exit(0)
     client.close()
 
@@ -85,8 +86,6 @@ def get_queries(choice: str) -> tuple:
             {"$sort": {"count": -1}},
             {"$limit": 5}
         ])
-        # print(*data, sep="\n")
-        # time.sleep(3)
     result = []
     for item in data:
         if choice == "recent":

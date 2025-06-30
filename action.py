@@ -3,14 +3,14 @@ import user_interface as ui
 import mysql_connector as sql
 import mongo_connector as mong
 import sys
+import math
 
 
 def stop() -> None:
     """
-    Prints a goodbye message, draws a line, and exits the program.
+    Prints a goodbye message and exits the program.
     """
-    print("\nGoodbye!")
-    ui.print_line()
+    ui.exit_print()
     sys.exit(0)
 
 
@@ -41,7 +41,7 @@ def main_action(choice: str) -> None:
         case "2":
             main.search_by_genre_year()
         case "3":
-            main.view_queries(None)
+            main.view_queries()
         case _:
             ui.invalid_choice(None)
             main.main()
@@ -164,7 +164,7 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
         if check == 0:
             mong.add_request([genre, years], quantity)
             check = 1
-        pages = quantity // 10 + (1 if quantity % 10 else 0)
+        pages = math.ceil(quantity / 10)
         if not quantity:
             page = 0
             pages = 0
@@ -204,35 +204,37 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
                 ui.invalid_choice(None)
 
 
+def select_queries(queri: str) -> str:
+    """
+    Displays query data and handles switching from popular to recent queries.
+
+    :param queri: The type of queries to display.
+    :return: The new query type to switch to.
+    """
+    data = mong.get_queries(queri)
+    while True:
+        choice = ui.show_queries_data_frame(data, queri)
+        main_choice(choice)
+        if choice == "1":
+            return "2" if queri == "popular" else "1"
+        else:
+            ui.invalid_choice(None)
+
+
 def view_queries_action(choice: str) -> None:
     """
     Handles user actions for viewing popular or recent search queries.
 
     :param choice: User's menu choice.
     """
-    main_choice(choice)
-    match choice:
-        case "1":
-            data = mong.get_queries("popular")
-            while True:
-                choice_q = ui.show_queries_data_frame(data, "popular")
-                main_choice(choice_q)
-                if choice_q == "1":
-                    choice = "2"
-                    break
-                else:
-                    ui.invalid_choice(None)
-        case "2":
-            data = mong.get_queries("recent")
-            while True:
-                choice_q = ui.show_queries_data_frame(data, "recent")
-                main_choice(choice_q)
-                if choice_q == "1":
-                    choice = "1"
-                    break
-                else:
-                    ui.invalid_choice(None)
-        case _:
-            ui.invalid_choice(None)
-            choice = None
-    main.view_queries(choice)
+    while True:
+        main_choice(choice)
+        match choice:
+            case "1":
+                choice = select_queries("popular")
+            case "2":
+                choice = select_queries("recent")
+            case _:
+                ui.invalid_choice(None)
+                choice = None
+        # main.view_queries(choice)

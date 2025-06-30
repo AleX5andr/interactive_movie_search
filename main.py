@@ -36,14 +36,11 @@ def search_by_genre_year(genre: str | None = None) -> None:
     action.search_by_genre_year(0, genre, choice_years)
 
 
-def view_queries(choice: str | None) -> None:
+def view_queries() -> None:
     """
-    Handles viewing of popular or recent queries.
-
-    :param choice: User's choice or None to prompt.
+    Displays the queries menu and handles user actions for viewing queries.
     """
-    if not choice:
-        choice = ui.view_queries_interface()
+    choice = ui.view_queries_interface()
     action.view_queries_action(choice)
 
 

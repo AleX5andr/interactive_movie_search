@@ -56,6 +56,23 @@ def invalid_choice(text: str | None) -> None:
     time.sleep(sleep_time)
 
 
+def error_print(text: str) -> None:
+    """
+    Prints the provided error message.
+
+    :param text: Error message to display.
+    """
+    print(text)
+
+
+def exit_print() -> None:
+    """
+    Prints a goodbye message and a separating line.
+    """
+    print("\nGoodbye!")
+    print_line()
+
+
 def empty_result(choice: str | list) -> None:
     """
     Displays a red warning message when no movies are found for the given search.
@@ -129,7 +146,7 @@ def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     df["Rental duration"] = df["Rental duration"].apply(lambda item: f"{item} day(s)")
     print(df.to_markdown(tablefmt="github", index=False))
     table_lines = df.to_string(index=False).split('\n')
-    max_length = max(len(line) for line in table_lines) + df.shape[1] * 3 + 1
+    max_length = max(len(line) for line in table_lines) + df.shape[1] * 3
     print()
     text = f"{page} / {pages}"
     print(f"{text:^{max_length}}\n")
@@ -238,15 +255,14 @@ def show_queries_data_frame(data: tuple, choice: str) -> str:
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
     table_lines = df.to_string(index=False).split('\n')
-    text = ("Popular" if choice == "popular" else "Recent") + " queries"
-    max_length = max(len(line) for line in table_lines) + df.shape[1] * 3 + 1
+    text = choice.capitalize() + " queries"
+    max_length = max(len(line) for line in table_lines) + df.shape[1] * 3
     text = f"{text:^{max_length}}"
     print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
     print()
     print(df.to_markdown(tablefmt="github", index=False))
-    print()
     if choice == "recent":
-        print("1. View popular queries")
+        print("\n1. View popular queries")
     else:
-        print("1. View recent queries")
+        print("\n1. View recent queries")
     return choice_menu()

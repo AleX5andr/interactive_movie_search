@@ -1,4 +1,5 @@
 ﻿import settings as se
+import user_interface as ui
 import pymysql
 import sys
 
@@ -12,7 +13,7 @@ def connection() -> pymysql.connections.Connection:
     try:
         conn = pymysql.connect(**se.MYSQL_CONFIG)
     except Exception as error:
-        print(error)
+        ui.error_print(str(error))
         sys.exit(0)
     return conn
 
