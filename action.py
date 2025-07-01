@@ -49,6 +49,24 @@ def main_action(choice: str) -> None:
             main.main()
 
 
+def about_film_action(film_id: int) -> None:
+    """
+    Handles the interaction loop for displaying and navigating detailed film information.
+
+    :param film_id: The unique ID of the selected film.
+    """
+    film_data = sql.get_data_about_film(film_id)[0]
+    while True:
+        choice = ui.about_film(film_data)
+        main_choice(choice)
+        match choice:
+            case "b":
+                break
+            case _:
+                log().warning("Invalid choice.")
+                ui.invalid_choice(None)
+
+
 def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
     """
     Handles the interactive search-by-title flow with pagination.
@@ -60,6 +78,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
     page = 1
     pages = quantity // 10 + 1
     data = []
+    data_id = []
     mong.add_request(keyword, quantity)
     while True:
         if not quantity:
@@ -70,11 +89,12 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
         else:
             if not data:
                 data = sql.search_movie_by_title(keyword, start)
+                data_id = [row[0] for row in data]
             ui.show_data_frame(data, page, pages, keyword)
         choice = ui.data_frame_menu(page, pages, "title")
         main_choice(choice)
         match choice:
-            case "1":
+            case "n":
                 if not quantity or page == pages:
                     log().warning("Invalid choice.")
                     ui.invalid_choice(None)
@@ -82,7 +102,7 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
                     start += 10
                     page += 1
                     data = []
-            case "2":
+            case "p":
                 if not quantity or page == 1:
                     log().warning("Invalid choice.")
                     ui.invalid_choice(None)
@@ -90,6 +110,8 @@ def search_by_title_action(start: int, quantity: int, keyword: str) -> None:
                     start -= 10
                     page -= 1
                     data = []
+            case ch if ch in map(str, data_id):
+                about_film_action(int(ch))
             case "c":
                 main.search_by_title()
             case _:
@@ -169,6 +191,7 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
     check = 0
     while True:
         data, quantity = sql.search_movie_by_genre_year(genre, years, start)
+        data_id = [row[0] for row in data]
         if check == 0:
             mong.add_request([genre, years], quantity)
             check = 1
@@ -182,20 +205,22 @@ def search_by_genre_year(start: int, genre: str, years: int | list | None) -> No
         choice = ui.data_frame_menu(page, pages, "genre")
         main_choice(choice)
         match choice:
-            case "1":
+            case "n":
                 if not quantity or page == pages:
                     log().warning("Invalid choice.")
                     ui.invalid_choice(None)
                 else:
                     start += 10
                     page += 1
-            case "2":
+            case "p":
                 if not quantity or page == 1:
                     log().warning("Invalid choice.")
                     ui.invalid_choice(None)
                 else:
                     start -= 10
                     page -= 1
+            case ch if ch in map(str, data_id):
+                about_film_action(int(ch))
             case "c":
                 genres = sql.get_genres()
                 choice = ui.choice_genres(genres)

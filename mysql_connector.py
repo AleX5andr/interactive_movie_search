@@ -129,3 +129,18 @@ def search_movie_by_genre_year(genre: str, years: list | int | None, start: int)
         quantity = len(cursor.fetchall())
     conn.close()
     return data, quantity
+
+
+def get_data_about_film(film_id: int) -> tuple:
+    """
+    Retrieves detailed information about a film by its ID.
+
+    :param film_id: Unique identifier of the film.
+    :return: Tuple containing the film's detailed data.
+    """
+    conn = connection()
+    with conn.cursor() as cursor:
+        cursor.execute(se.QUERY_ABOUT_FILM, {"id": film_id})
+        data = cursor.fetchall()
+    conn.close()
+    return data

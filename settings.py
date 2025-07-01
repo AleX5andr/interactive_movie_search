@@ -67,6 +67,41 @@ QUERY_SEARCH_BY_GENRE_UND_YEARS = '''
     LIMIT %(end)s
     OFFSET %(start)s
     '''
+QUERY_ABOUT_FILM = """
+    SELECT
+        f.film_id, 
+        f.title, 
+        f.description, 
+        c.name,
+        f.release_year,
+        GROUP_CONCAT(CONCAT(ac.first_name, " ", ac.last_name) SEPARATOR ", ") AS actors,
+        la.name, 
+        CONCAT(f.length, " min"), 
+        f.rating, 
+        CONCAT(f.rental_duration, " day(s)"), 
+        CONCAT(f.rental_rate, "€")
+    FROM film AS f
+    JOIN film_category AS fc ON f.film_id = fc.film_id
+    JOIN category AS c ON fc.category_id = c.category_id
+    JOIN language AS la ON f.language_id = la.language_id
+    JOIN film_actor AS fa ON f.film_id = fa.film_id
+    JOIN actor AS ac ON fa.actor_id = ac.actor_id
+    WHERE f.film_id = %(id)s;
+    """
+ABOUT_FILM_HEADERS = [
+    "Film ID",
+    "Title",
+    "Description",
+    "Genre",
+    "Release year",
+    "Actors",
+    "Language",
+    "Length",
+    "Rating",
+    "Rental duration",
+    "Rental rate"
+    ]
+ABOUT_FILM_HEADERS = ["   " + h.ljust(len(max(ABOUT_FILM_HEADERS, key=len)) + 1) + "|" for h in ABOUT_FILM_HEADERS]
 
 
 # MongoDB credentials

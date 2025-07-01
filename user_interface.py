@@ -36,11 +36,11 @@ def choice_menu() -> str:
     return input("Choose an option: ").strip().lower()
 
 
-def print_line() -> None:
+def print_line(width: int | None = se.INTERFACE_WIDTH) -> None:
     """
-    Prints a horizontal line based on the interface width.
+    Prints a horizontal line.
     """
-    print("-" * se.INTERFACE_WIDTH)
+    print("-" * width)
 
 
 def invalid_choice(text: str | None) -> None:
@@ -63,7 +63,7 @@ def error_print(text: Exception) -> None:
 
     :param text: Error message to display.
     """
-    log().critical(text)   # , exc_info=True
+    log().critical(text)
     print(text)
 
 
@@ -133,12 +133,12 @@ def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     if isinstance(text, str):
         main_line("Search by title")
         print(f"\nSearch by keyword '{text}'")
-    if isinstance(text, list):
+    elif isinstance(text, list):
         main_line("Search by genre and year")
         print(f"\nSelected genre - '{text[0]}'")
         if isinstance(text[1], int):
             print(f"Selected year - '{text[1]}'")
-        if isinstance(text[1], list):
+        elif isinstance(text[1], list):
             print(f"Selected range of years is from {text[1][0]} to {text[1][1]}")
     print()
     df = pd.DataFrame(data, columns=se.SQL_TABLE_HEADERS)
@@ -163,10 +163,12 @@ def data_frame_menu(page: int, pages: int, choice: str) -> str:
     :param choice: Type of search.
     :return: The user's menu choice as a lowercase string.
     """
+    print("More about the film (enter ID)\n")
+    print_line()
     if page < pages:
-        print("1. Next page")
+        print("N. Next page")
     if page > 1:
-        print("2. Previous page")
+        print("P. Previous page")
     if choice == "title":
         print("C. Change keyword")
     elif choice == "genre":
@@ -199,7 +201,7 @@ def choice_genres(genres: list) -> str:
         if n4 <= len(genres):
             text = text + f" {n4:^3}. {genres[n4 - 1]:<{width}}"
         print(text)
-    print("-" * table_width)
+    print_line(table_width)
     print()
     return choice_menu()
 
@@ -250,10 +252,8 @@ def show_queries_data_frame(data: tuple, choice: str) -> str:
     :return: The user's menu choice as a lowercase, stripped string.
     """
     clear_console()
-    if choice == "recent":
-        df = pd.DataFrame(data, columns=se.MONGO_TABLE_HEADERS_RECENT)
-    else:
-        df = pd.DataFrame(data, columns=se.MONGO_TABLE_HEADERS_POPULAR)
+    columns = se.MONGO_TABLE_HEADERS_RECENT if choice == "recent" else se.MONGO_TABLE_HEADERS_POPULAR
+    df = pd.DataFrame(data, columns=columns)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
     table_lines = df.to_string(index=False).split('\n')
@@ -263,8 +263,42 @@ def show_queries_data_frame(data: tuple, choice: str) -> str:
     print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
     print()
     print(df.to_markdown(tablefmt="github", index=False))
-    if choice == "recent":
-        print("\n1. View popular queries")
-    else:
-        print("\n1. View recent queries")
+    print(f"\n1. View {'recent' if choice == "recent" else 'popular'} queries")
+    return choice_menu()
+
+
+def about_film(film_data: tuple) -> str:
+    """
+    Displays detailed information about a film in a formatted layout
+    and returns the user's navigation choice.
+
+    :param film_data: Tuple containing all the information about a specific film.
+    :return: User's choice input.
+    """
+    clear_console()
+    headers = se.ABOUT_FILM_HEADERS
+    main_line("  About film '" + film_data[1] + "'  ")
+    for n, row in enumerate(film_data):
+        if n == 2 or n == 5:
+            if len(row) > 60:
+                sepa = " " if n == 2 else ", "
+                words = row.split(sepa)
+                res = ""
+                num = 1
+                for word in words:
+                    if len(res + sepa + word) <= 60:
+                        res += word + sepa
+                    else:
+                        if num == 1:
+                            print(headers[n], res)
+                        else:
+                            print(" " * len(headers[n]), res)
+                        num += 1
+                        res = word
+                print(" " * len(headers[n]), res[:len(res) - len(sepa)])
+        else:
+            print(headers[n], row)
+    print()
+    print_line()
+    print("B. Go back")
     return choice_menu()
