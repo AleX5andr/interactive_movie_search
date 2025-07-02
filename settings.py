@@ -76,7 +76,9 @@ QUERY_ABOUT_FILM = """
         f.release_year,
         GROUP_CONCAT(CONCAT(ac.first_name, " ", ac.last_name) SEPARATOR ", ") AS actors,
         la.name, 
-        CONCAT(f.length, " min"), 
+        IF(f.length > 59,
+            CONCAT(f.length DIV 60, "h ", MOD(f.length, 60), "min"),
+            CONCAT(f.length, " min")), 
         f.rating, 
         CONCAT(f.rental_duration, " day(s)"), 
         CONCAT(f.rental_rate, "€")
