@@ -1,9 +1,23 @@
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+sql_host = os.getenv("SQL_HOST")
+sql_user = os.getenv("SQL_USER")
+sql_password = os.getenv("SQL_PASSWORD")
+mongo_user = os.getenv("MONGO_USER")
+mongo_password = os.getenv("MONGO_PASSWORD")
+mongo_host = os.getenv("MONGO_HOST")
+
+
 # MySQL credentials
 MYSQL_CONFIG = {
-    'host': 'ich-db.edu.itcareerhub.de',
-    'user': 'ich1',
-    'password': 'password',
-    'database': 'sakila'
+    'host': sql_host,
+    'user': sql_user,
+    'password': sql_password,
+    'database': 'sakila',
+    'connect_timeout': 15
 }
 
 
@@ -11,7 +25,8 @@ MYSQL_CONFIG = {
 LINE_LIMIT = 10
 SQL_TABLE_HEADERS = ["ID", "Title", "Year", "Genre", "Language", "Rental cost", "Rental duration"]
 QUERY_SEARCH_BY_TITLE = '''
-    SELECT f.film_id, f.title, f.release_year, c.name, la.name, f.rental_rate, f.rental_duration
+    SELECT f.film_id, f.title, f.release_year, c.name, la.name,
+        CONCAT(f.rental_rate, "€"), CONCAT(f.rental_duration, " day(s)")
     FROM film AS f
     JOIN film_category AS fc on f.film_id = fc.film_id
     JOIN category AS c on fc.category_id = c.category_id
@@ -101,15 +116,15 @@ ABOUT_FILM_HEADERS = [
     "Length",
     "Rating",
     "Rental duration",
-    "Rental rate"
+    "Rental cost"
     ]
-ABOUT_FILM_HEADERS = ["   " + h.ljust(len(max(ABOUT_FILM_HEADERS, key=len)) + 1) + "|" for h in ABOUT_FILM_HEADERS]
+ABOUT_FILM_HEADERS = [h.ljust(len(max(ABOUT_FILM_HEADERS, key=len)) + 1) + "|" for h in ABOUT_FILM_HEADERS]
 
 
 # MongoDB credentials
 MONGO_URL = (
-    "mongodb://ich_editor:verystrongpassword@mongo.itcareerhub.de/"
-    "?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich_edit"
+    f"mongodb://{mongo_user}:{mongo_password}@{mongo_host}/"
+    f"?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich_edit"
 )
 MONGO_COLLECTION = "final_project_100125dam_oleksandr_m"
 

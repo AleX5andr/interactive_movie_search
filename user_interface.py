@@ -2,6 +2,7 @@ import settings as se
 from logger import log
 import os
 import time
+from math import ceil
 import pandas as pd
 from colorama import Fore, Back, Style
 
@@ -14,13 +15,14 @@ def clear_console() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def main_line(text: str) -> None:
+def main_line(text: str, width: int | None = se.INTERFACE_WIDTH) -> None:
     """
-    Prints a centered line of text with styled formatting.
+    Prints a centered title line with a white background and black text.
 
-    :param text: The text to display.
+    :param text: The text to display in the center of the line.
+    :param width: The total width of the line.
     """
-    text = f"{text:^{se.INTERFACE_WIDTH}}"
+    text = f"{text:^{width}}"
     print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
 
 
@@ -144,8 +146,6 @@ def show_data_frame(data: tuple, page: int, pages: int, text: str | list):
     df = pd.DataFrame(data, columns=se.SQL_TABLE_HEADERS)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
-    df["Rental cost"] = df["Rental cost"].apply(lambda item: f"{item}€")
-    df["Rental duration"] = df["Rental duration"].apply(lambda item: f"{item} day(s)")
     print(df.to_markdown(tablefmt="github", index=False))
     table_lines = df.to_string(index=False).split('\n')
     max_length = max(len(line) for line in table_lines) + df.shape[1] * 3
@@ -186,10 +186,10 @@ def choice_genres(genres: list) -> str:
     """
     clear_console()
     col = 4
-    quan = len(genres) // col + (1 if len(genres) % col else 0)
+    quan = ceil(len(genres) / col)
     width = len(max(genres, key=len)) + 2
     table_width = (width + 6) * col - 1
-    main_line("Select a movie genre")
+    main_line("Select a movie genre", table_width)
     for i in range(quan):
         n1 = i + 1
         n2 = i + 1 + quan
@@ -276,17 +276,19 @@ def about_film(film_data: tuple) -> str:
     :return: User's choice input.
     """
     clear_console()
+    width = 60
     headers = se.ABOUT_FILM_HEADERS
-    main_line("  About film '" + film_data[1] + "'  ")
+    table_width = len(max(headers, key=len)) + width
+    main_line("About film '" + film_data[1] + "'", table_width)
     for n, row in enumerate(film_data):
         if n == 2 or n == 5:
-            if len(row) > 60:
+            if len(row) > width:
                 sepa = " " if n == 2 else ", "
                 words = row.split(sepa)
                 res = ""
                 num = 1
                 for word in words:
-                    if len(res + sepa + word) <= 60:
+                    if len(res + sepa + word) <= width:
                         res += word + sepa
                     else:
                         if num == 1:
@@ -298,7 +300,6 @@ def about_film(film_data: tuple) -> str:
                 print(" " * len(headers[n]), res[:len(res) - len(sepa)])
         else:
             print(headers[n], row)
-    print()
-    print_line()
-    print("B. Go back")
+    print_line(table_width)
+    print("\nB. Go back")
     return choice_menu()
