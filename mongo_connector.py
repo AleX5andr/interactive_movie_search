@@ -1,13 +1,14 @@
 import pymongo.errors
-
 import settings as se
 import user_interface as ui
 import sys
 from pymongo import MongoClient
 from pymongo.synchronous.collection import Collection
 from datetime import datetime
+from logger import log_error
 
 
+@log_error()
 def client_open() -> tuple[MongoClient, Collection]:
     """
     Connects to MongoDB and returns the client and target collection.
@@ -16,18 +17,12 @@ def client_open() -> tuple[MongoClient, Collection]:
 
     Exits if the connection fails.
     """
-    try:
-        client = MongoClient(se.MONGO_URL)
-        if not client.admin.command("ping"):
-            raise pymongo.errors.ConnectionFailure("Connection failed.")
-        coll = client["ich_edit"][se.MONGO_COLLECTION]
-    except ConnectionError as error:
-        ui.error_print(error)
-        sys.exit(0)
-    else:
-        return client, coll
+    client = MongoClient(se.MONGO_URL)
+    coll = client["ich_edit"][se.MONGO_COLLECTION]
+    return client, coll
 
 
+@log_error()
 def add_request(choice: str | list, quantity: int) -> None:
     """
     Saves a search request to MongoDB with timestamp and result count.
@@ -65,6 +60,7 @@ def add_request(choice: str | list, quantity: int) -> None:
     client.close()
 
 
+@log_error()
 def get_queries(choice: str) -> tuple:
     """
     Retrieves either the 5 most recent or 5 most frequent search queries from MongoDB.

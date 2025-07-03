@@ -1,5 +1,4 @@
 import settings as se
-from logger import log
 import os
 import time
 from math import ceil
@@ -45,18 +44,14 @@ def print_line(width: int | None = se.INTERFACE_WIDTH) -> None:
     print("-" * width)
 
 
-def invalid_choice(text: str | None) -> None:
+def invalid_choice(text: str | None=None) -> None:
     """
     Displays an error message for invalid user input.
 
     :param text: Optional custom error message.
     """
-    sleep_time = 2
-    if not text:
-        text = "Invalid choice. Try again."
-        sleep_time = 1
     print(Fore.RED + "\n" + text + "\n" + Style.RESET_ALL)
-    time.sleep(sleep_time)
+    time.sleep(1)
 
 
 def error_print(text: Exception) -> None:
@@ -65,7 +60,6 @@ def error_print(text: Exception) -> None:
 
     :param text: Error message to display.
     """
-    log().critical(text)
     print(text)
 
 
@@ -89,7 +83,7 @@ def empty_result(choice: str | list) -> None:
         text = Fore.RED + f"\nThere are no {choice[0]} movies"
         if isinstance(choice[1], int):
             text += f" released in {choice[1]}."
-        if isinstance(choice[1], list):
+        elif isinstance(choice[1], list):
             text += f" released between {choice[1][0]} and {choice[1][1]}."
         text += Style.RESET_ALL + "\n"
         print(text)

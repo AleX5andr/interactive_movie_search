@@ -124,7 +124,7 @@ ABOUT_FILM_HEADERS = [h.ljust(len(max(ABOUT_FILM_HEADERS, key=len)) + 1) + "|" f
 # MongoDB credentials
 MONGO_URL = (
     f"mongodb://{mongo_user}:{mongo_password}@{mongo_host}/"
-    f"?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich_edit"
+    "?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich_edit"
 )
 MONGO_COLLECTION = "final_project_100125dam_oleksandr_m"
 

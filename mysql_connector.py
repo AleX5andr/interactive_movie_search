@@ -1,23 +1,19 @@
 ﻿import settings as se
-import user_interface as ui
 import pymysql
-import sys
+from logger import log_error
 
 
+@log_error()
 def connection() -> pymysql.connections.Connection:
     """
     Establishes and returns a MySQL database connection.
 
     :return: Active MySQL connection object.
     """
-    try:
-        conn = pymysql.connect(**se.MYSQL_CONFIG)
-    except Exception as error:
-        ui.error_print(error)
-        sys.exit(0)
-    return conn
+    return pymysql.connect(**se.MYSQL_CONFIG)
 
 
+@log_error()
 def quantity_in_movie_by_title(keyword: str) -> int:
     """
     Returns the count of movies matching the given title keyword.
@@ -36,6 +32,7 @@ def quantity_in_movie_by_title(keyword: str) -> int:
     return quantity
 
 
+@log_error()
 def search_movie_by_title(keyword: str, start: int) -> tuple:
     """
     Retrieves a batch of movies matching the title keyword with pagination.
@@ -57,6 +54,7 @@ def search_movie_by_title(keyword: str, start: int) -> tuple:
     return data
 
 
+@log_error()
 def get_genres() -> list:
     """
     Retrieves a list of all movie genres from the database.
@@ -71,6 +69,7 @@ def get_genres() -> list:
     return genres
 
 
+@log_error()
 def get_years() -> tuple:
     """
     Retrieves the range of years (min and max) of movies from the database.
@@ -85,6 +84,7 @@ def get_years() -> tuple:
     return years
 
 
+@log_error()
 def search_movie_by_genre_year(genre: str, years: list | int | None, start: int) -> tuple[tuple, int]:
     """
     Retrieves movies filtered by genre and optionally by year or year range with pagination.
@@ -131,6 +131,7 @@ def search_movie_by_genre_year(genre: str, years: list | int | None, start: int)
     return data, quantity
 
 
+@log_error()
 def get_data_about_film(film_id: int) -> tuple:
     """
     Retrieves detailed information about a film by its ID.
