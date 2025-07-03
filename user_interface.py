@@ -290,7 +290,7 @@ def about_film(film_data: tuple) -> str:
                         else:
                             print(" " * len(headers[n]), res)
                         num += 1
-                        res = word
+                        res = word + sepa
                 print(" " * len(headers[n]), res[:len(res) - len(sepa)])
         else:
             print(headers[n], row)
