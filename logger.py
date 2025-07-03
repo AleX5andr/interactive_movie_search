@@ -7,7 +7,7 @@ from functools import wraps
 logging.basicConfig(
     filename=se.FILE_LOG_NAME,
     level=logging.WARNING,
-    format="%(asctime)s %(funcName)s %(levelname)s:\n\t%(message)s",
+    format="%(asctime)s %(funcName)s %(levelname)s:\n\t%(message)s\n",
     encoding="utf-8"
 )
 
