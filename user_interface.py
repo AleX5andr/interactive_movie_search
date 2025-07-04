@@ -257,7 +257,7 @@ def show_queries_data_frame(data: tuple, choice: str) -> str:
     print(Fore.BLACK + Back.WHITE + text + Style.RESET_ALL)
     print()
     print(df.to_markdown(tablefmt="github", index=False))
-    print(f"\n1. View {'recent' if choice == "recent" else 'popular'} queries")
+    print(f"\n1. View {'popular' if choice == "recent" else 'recent'} queries")
     return choice_menu()
 
 
