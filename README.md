@@ -35,6 +35,23 @@ Nutzung:
 
 Den Anweisungen im Konsolenmenü folgen, um Filme zu suchen, Details anzusehen oder die Statistik zu prüfen.
 
+## Screenshots
+
+### Hauptmenü
+![Main Menu](screenshots/main_menu.png)
+
+### Filmsuche nach Keyword
+![Search by Keyword](screenshots/search_keyword.png)
+
+### Filmsuche nach Genre und Jahr
+![Search by Genre and Year](screenshots/search_genre_year.png)
+
+### Film Detailansicht
+![Film Details](screenshots/film_details.png)
+
+### Statistik der Suchanfragen
+![Search Statistics](screenshots/search_statistics.png)
+
 Beitragende
 Projekt von Oleksandr Muntian
 
