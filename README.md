@@ -49,6 +49,8 @@ Interaktive Konsolenanwendung in Python, mit der Filme aus einer MySQL-Datenbank
 - **Anwendung starten:**
   `python main.py` (anschließend den Anweisungen im Konsolenmenü folgen, um Filme zu suchen, Details anzusehen oder die Statistik zu prüfen)
 
+---
+
 ## 📸 Screenshots
 
 ### Hauptmenü
@@ -65,6 +67,8 @@ Interaktive Konsolenanwendung in Python, mit der Filme aus einer MySQL-Datenbank
 
 ### Statistik der Suchanfragen
 ![Search Statistics](screenshots/search_statistics.png)
+
+---
 
 ## 👤 Autor & Lizenz
 
